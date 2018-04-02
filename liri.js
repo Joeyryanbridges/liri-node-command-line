@@ -7,7 +7,7 @@ var fs = require("fs");
 var key = require(__dirname + "/keys.js");
 var socialMedia = require("twitter");
 var musicMedia = require("node-spotify-api");
-var moviesOmdb = require(keys.omdb);
+var moviesOmdb = (keys.omdb);
 //Initilizes Api's?
 var twitter = new Twitter(keys.twitter);
 var spotify = new Spotify(keys.spotify);
@@ -78,32 +78,37 @@ function spotifyThisSong() {
             console.log("Preview: " + songInfo.preview_url);
             console.log("------------------------------------");
         }
-    },
+    });
 
 
-        //Make movieThis output movie information
-        //* Title of the movie.
-        //* Year the movie came out.
-        //* IMDB Rating of the movie.
-        //* Rotten Tomatoes Rating of the movie.
-        //* Country where the movie was produced.
-        //* Language of the movie.
-        //* Plot of the movie.
-        //* Actors in the movie.
-        function () {
-            var omdbQueryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=" + omdbApi.key;
-            request(omdbQueryUrl, function (error, response, body) {
-                if (!error && response.statuscode === 200) {
-                    var movieBody = JSON.parse(body);
-                    console.log("Title: " + movieBody.Title);
-                    console.log("Year :" + movieBody.Year);
-                    console.log("Rating: " + movieBody.Rating[1]);
-                    console.log("Rotten Tomatoes: " + movieBody.Rotten)
-                }
-            },
+    //Make movieThis output movie information
+    //* Title of the movie.
+    //* Year the movie came out.
+    //* IMDB Rating of the movie.
+    //* Rotten Tomatoes Rating of the movie.
+    //* Country where the movie was produced.
+    //* Language of the movie.
+    //* Plot of the movie.
+    //* Actors in the movie.
 
-
-                //Make doWhatItSays text in random.txt calling one of liri's commands
-                function doWhatItSays() {
-
-                }
+    function movieThis(movie) {
+        var title = movie;
+        if (title === ' ') {
+            title = "Mr. Nobody"
+        };
+        var omdbQueryUrl = "http://www.omdbapi.com/?t=" + title + "&y=&plot=short&apikey=" + moviesOmdb.key;
+        request(omdbQueryUrl, function (error, response, body) {
+            if (!error && response.statusCode === 200) {
+                var movieBody = JSON.parse(body);
+                console.log("Title: " + movieBody.Title);
+                console.log("Year :" + movieBody.Year);
+                console.log("Rating: " + movieBody.Rating[1]);
+                console.log("Rotten Tomatoes: " + movieBody.Rating[1].Value);
+                console.log("Where was it produced: " + movieBody.Country);
+                console.log("Language: " + movieBody.Language);
+                console.log("Plot of movie: " + movieBody.Plot);
+                console.log("Actors: " + movieBody.Actors);
+            }
+        })
+    }
+}
