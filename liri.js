@@ -1,42 +1,54 @@
-//liri bot requirement
+//accessing liribot
 var inquirer = require('inquirer')
+//require functions for node packages
 require("dotenv").config();
 //Loading of Api/packages
 var request = require("request");
+var Twitter = require("twitter");
+var Spotify = require("node-spotify-api");
+//node package for reading nd writing files. 
 var fs = require("fs");
-var key = require(__dirname + "/keys.js");
-var socialMedia = require("twitter");
-var musicMedia = require("node-spotify-api");
-var moviesOmdb = (keys.omdb);
-//Initilizes Api's?
+//.env keys to javascript fo API's and their functionality
+var keys = require('./keys.js');
+
+//Importing spotify and twitter keys
 var twitter = new Twitter(keys.twitter);
 var spotify = new Spotify(keys.spotify);
-//Arguments for the user's input
-var userCommands = process.argv[2];
+
+//Variables for the user's input
+var userCommand = process.argv[2];
 var userArgument = process.argv[3];
 
 //Switch-case to direct the function that will be ran
-switch (action) {
-    case "my-tweets":
-        myTweets();
-        break;
-
-    case "spotify-this-song":
-        if (userArgument) {
-            spotifyThisSong(userArgument);
-        } else {
-            spotifyThisSong("The Sign Ace of Base")
+function switchCase(userCommand, userArgument) {
+    switch (userCommand) {
+        case "my-tweets":
+            myTweets();
             break;
-        };
 
-    case "movie-this":
-        movieThis();
-        break;
+        case "spotify-this-song":
+            if (userArgument) {
+                spotifyThisSong(userArgument);
+            } else {
+                spotifyThisSong("The Sign, Ace of Base");
+                console.log("   Search a new song yourself!  ")
+                break;
+            };
 
-    case "do-what-it-says":
-        doWhatItSays();
-        break;
-}
+        case "movie-this":
+            if (userArgument) {
+                movieThis(userArgument)
+            } else {
+                movieThis("Mr. Nobody");
+                console.log("   Search a movie yourself!!   ")
+            };
+            break;
+
+        case "do-what-it-says":
+            doWhatItSays();
+            break;
+    };
+};
 
 //Make myTweets show last 20 tweets and when they were created
 function myTweets() {
@@ -44,12 +56,13 @@ function myTweets() {
         screen_name: 'himynameis_joey',
         count: 20
     };
-    client.get('statuses/user_timeline', params, function (error, tweets, response) {
+    twitter.get('statuses/user_timeline/', params, function (error, tweets, response) {
         if (!error) {
             for (i = 0; i < tweets.length; i++) {
-                console.log.apply("Tweet: " + tweets[i].text);
+                console.log("   *************************************")
+                console.log("Tweet: " + tweets[i].text);
                 console.log("Date: " + tweets[i].created_at);
-                console.assert.log("-------------------------");
+                console.log("   *************************************")
                 fs.appendFile("log.txt", "Tweet: " + tweets[i].text + "\r\n" + tweets[i].created_at + "\r\n" + "\r\n", (error) => { /* err */ });
             }
         }
@@ -63,7 +76,7 @@ function myTweets() {
 //* A preview link of the song from Spotify
 //* The album that the song is from
 function spotifyThisSong() {
-    if (song === ' ') {
+    if (song === '') {
         song = 'The Sign Ace of Base';
     }
     spotify.search({ type: 'track, query: song' }, function (err, data) {
@@ -91,15 +104,11 @@ function spotifyThisSong() {
     //* Plot of the movie.
     //* Actors in the movie.
 
-    function movieThis(movie) {
-        var title = movie;
-        if (title === ' ') {
-            title = "Mr. Nobody"
-        };
-        var omdbQueryUrl = "http://www.omdbapi.com/?t=" + title + "&y=&plot=short&apikey=" + moviesOmdb.key;
-        request(omdbQueryUrl, function (error, response, body) {
+    function movieThis(userArgument) {
+        request("http://www.omdbapi.com/?t=" + inputName + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
             if (!error && response.statusCode === 200) {
                 var movieBody = JSON.parse(body);
+                console.log("     *****************************  ")
                 console.log("Title: " + movieBody.Title);
                 console.log("Year :" + movieBody.Year);
                 console.log("Rating: " + movieBody.Rating[1]);
@@ -108,7 +117,10 @@ function spotifyThisSong() {
                 console.log("Language: " + movieBody.Language);
                 console.log("Plot of movie: " + movieBody.Plot);
                 console.log("Actors: " + movieBody.Actors);
-            }
-        })
-    }
-}
+                console.log("     *****************************  ")
+            };
+        });
+    };
+};
+
+switchCase(userCommand, userArgument);
