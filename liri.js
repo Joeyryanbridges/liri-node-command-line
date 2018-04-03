@@ -69,7 +69,6 @@ function myTweets() {
     });
 }
 
-
 //Make spotifyThisSong show song information
 //* Artist
 //* The song's name
@@ -93,7 +92,6 @@ function spotifyThisSong() {
         }
     });
 
-
     //Make movieThis output movie information
     //* Title of the movie.
     //* Year the movie came out.
@@ -105,18 +103,17 @@ function spotifyThisSong() {
     //* Actors in the movie.
 
     function movieThis(userArgument) {
-        request("http://www.omdbapi.com/?t=" + inputName + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
+        request("http://www.omdbapi.com/?t=" + userArgument + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
             if (!error && response.statusCode === 200) {
-                var movieBody = JSON.parse(body);
                 console.log("     *****************************  ")
-                console.log("Title: " + movieBody.Title);
-                console.log("Year :" + movieBody.Year);
-                console.log("Rating: " + movieBody.Rating[1]);
-                console.log("Rotten Tomatoes: " + movieBody.Rating[1].Value);
-                console.log("Where was it produced: " + movieBody.Country);
-                console.log("Language: " + movieBody.Language);
-                console.log("Plot of movie: " + movieBody.Plot);
-                console.log("Actors: " + movieBody.Actors);
+                console.log("Title: " + JSON.parse(body).Title);
+                console.log("Year :" + JSON.parse(body).Year);
+                console.log("Rating: " + JSON.parse(body).Rating[1]);
+                console.log("Rotten Tomatoes: " + JSON.parse(body).Rating[1].Value);
+                console.log("Where was it produced: " + JSON.parse(body).Country);
+                console.log("Language: " + JSON.parse(body).Language);
+                console.log("Plot of movie: " + JSON.parse(body).Plot);
+                console.log("Actors: " + JSON.parse(body).Actors);
                 console.log("     *****************************  ")
             };
         });
