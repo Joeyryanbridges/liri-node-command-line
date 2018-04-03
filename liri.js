@@ -10,6 +10,7 @@ var Spotify = require("node-spotify-api");
 var fs = require("fs");
 //.env keys to javascript fo API's and their functionality
 var keys = require('./keys.js');
+var omdbApi = (keys.omdb);
 
 //Importing spotify and twitter keys
 var twitter = new Twitter(keys.twitter);
@@ -32,12 +33,12 @@ function switchCase(userCommand, userArgument) {
             } else {
                 spotifyThisSong("The Sign, Ace of Base");
                 console.log("   Search a new song yourself!  ")
-                break;
             };
+            break;
 
         case "movie-this":
             if (userArgument) {
-                movieThis(userArgument)
+                movieThis(userArgument);
             } else {
                 movieThis("Mr. Nobody");
                 console.log("   Search a movie yourself!!   ")
@@ -74,16 +75,18 @@ function myTweets() {
 //* The song's name
 //* A preview link of the song from Spotify
 //* The album that the song is from
-function spotifyThisSong() {
+function spotifyThisSong(song) {
     if (song === '') {
         song = 'The Sign Ace of Base';
     }
-    spotify.search({ type: 'track, query: song' }, function (err, data) {
+    spotify.search({
+        type: 'track', query: song
+    }, function (err, data) {
         if (err) {
             return console.log('Error occurred: ' + err);
         }
         else {
-            var songInfo = data.tracks.item[0];
+            var songInfo = data.tracks.items[0];
             console.log("Artist: " + songInfo.artists[0].name);
             console.log("Track: " + songInfo.name);
             console.log("Album: " + songInfo.album.name);
@@ -91,33 +94,39 @@ function spotifyThisSong() {
             console.log("------------------------------------");
         }
     });
-
-    //Make movieThis output movie information
-    //* Title of the movie.
-    //* Year the movie came out.
-    //* IMDB Rating of the movie.
-    //* Rotten Tomatoes Rating of the movie.
-    //* Country where the movie was produced.
-    //* Language of the movie.
-    //* Plot of the movie.
-    //* Actors in the movie.
-
-    function movieThis(userArgument) {
-        request("http://www.omdbapi.com/?t=" + userArgument + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
-            if (!error && response.statusCode === 200) {
-                console.log("     *****************************  ")
-                console.log("Title: " + JSON.parse(body).Title);
-                console.log("Year :" + JSON.parse(body).Year);
-                console.log("Rating: " + JSON.parse(body).Rating[1]);
-                console.log("Rotten Tomatoes: " + JSON.parse(body).Rating[1].Value);
-                console.log("Where was it produced: " + JSON.parse(body).Country);
-                console.log("Language: " + JSON.parse(body).Language);
-                console.log("Plot of movie: " + JSON.parse(body).Plot);
-                console.log("Actors: " + JSON.parse(body).Actors);
-                console.log("     *****************************  ")
-            };
-        });
-    };
 };
 
-switchCase(userCommand, userArgument);
+//Make movieThis output movie information
+//* Title of the movie.
+//* Year the movie came out.
+//* IMDB Rating of the movie.
+//* Rotten Tomatoes Rating of the movie.
+//* Country where the movie was produced.
+//* Language of the movie.
+//* Plot of the movie.
+//* Actors in the movie.
+
+function movieThis(movie) {
+    var title = movie;
+    if (title === '') {
+        title = "Mr. Nobody"
+    }
+    var queryUrl = "http://www.omdbapi.com/?t=" + title + "&y=&plot=short&apikey=" + omdbApi.key;
+    request(queryUrl, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            var body = JSON.parse(body);
+            console.log("     *****************************  ")
+            console.log("Title: " + body.Title);
+            console.log("Year: " + body.Year);
+            console.log("IMDB Rating: " + body.imdbRating);
+            console.log("Rotten Tomatoes Score: " + body.Ratings[1].Value);
+            console.log("Country produced in: " + body.Country);
+            console.log("Language: " + body.Language);
+            console.log("Plot: " + body.Plot);
+            console.log("Actors: " + body.Actors);
+            console.log("     *****************************  ")
+        };
+    });
+};
+
+switchCase(userCommand, userArgument)
