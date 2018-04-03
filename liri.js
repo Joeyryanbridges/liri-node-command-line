@@ -64,6 +64,7 @@ function myTweets() {
                 console.log("Tweet: " + tweets[i].text);
                 console.log("Date: " + tweets[i].created_at);
                 console.log("   *************************************")
+                //appending to .txt file
                 fs.appendFile("log.txt", "Tweet: " + tweets[i].text + "\r\n" + tweets[i].created_at + "\r\n" + "\r\n", (error) => { /* err */ });
             }
         }
@@ -92,6 +93,11 @@ function spotifyThisSong(song) {
             console.log("Album: " + songInfo.album.name);
             console.log("Preview: " + songInfo.preview_url);
             console.log("------------------------------------");
+            fs.appendFile("log.txt", "Artist: " + songInfo.artists[0].name + "\r\n", (error) => { /* oversee error */ })
+            fs.appendFile("log.txt", "Track: " + songInfo.name + "\r\n", (error) => { /* oversee error */ })
+            fs.appendFile("log.txt", "Album: " + songInfo.album.name + "\r\n", (error) => { /* oversee error */ })
+            fs.appendFile("log.txt", "Preview: " + songInfo.preview_url + "\r\n", (error) => { /* oversee error */ })
+            fs.appendFile("log.txt", "----------------------------------------------------------------" + "\r\n", (error) => { /* oversee error */ });
         }
     });
 };
@@ -125,6 +131,17 @@ function movieThis(movie) {
             console.log("Plot: " + body.Plot);
             console.log("Actors: " + body.Actors);
             console.log("     *****************************  ")
+            //appending to .txt file
+            fs.appendFile("log.txt", "Title: " + body.Title + "\r\n", (error) => { /* oversee error */ });
+            fs.appendFile("log.txt", "Year: " + body.Year + "\r\n", (error) => { /* oversee error */ });
+            fs.appendFile("log.txt", "IMDB Rating: " + body.imdbRating + "\r\n", (error) => { /* oversee error */ });
+            fs.appendFile("log.txt", "Rotten Tomatoes Score: " + body.Ratings[1].Value + "\r\n", (error) => { /* oversee error */ });
+            fs.appendFile("log.txt", "Country produced in: " + body.Country + "\r\n", (error) => { /* oversee error */ });
+            fs.appendFile("log.txt", "Language: " + body.Language + "\r\n", (error) => { /* oversee error */ });
+            fs.appendFile("log.txt", "Plot: " + body.Plot + "\r\n", (error) => { /* oversee error */ });
+            fs.appendFile("log.txt", "Actors: " + body.Actors + "\r\n", (error) => { /* oversee error */ });
+            console.log("----------------------------------------------------------------");
+            fs.appendFile("log.txt", "----------------------------------------------------------------" + "\r\n", (error) => { /* oversee error */ });
         };
     });
 };
